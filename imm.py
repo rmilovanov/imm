@@ -51,6 +51,11 @@ def is_valid_png(some_file):
 
 
 def convert_image_file_to_jpg(img_file):
+    """
+    Creates JPEG file from any image file
+    img_file : String
+        The name of source file
+    """
     img = Image.open(img_file).convert('RGB')
     os.remove(img_file)
     new_file_name = os.path.splitext(img_file)[0]+'.jpg'
