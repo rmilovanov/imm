@@ -60,6 +60,20 @@ def convert_image_file_to_jpg(img_file):
     os.remove(img_file)
     new_file_name = os.path.splitext(img_file)[0]+'.jpg'
     img.save(new_file_name, 'jpeg')
+    return new_file_name
+
+
+def convert_image_file_to_png(img_file):
+    """
+    Creates PNG file from any image file
+    img_file : String
+        The name of source file
+    """
+    img = Image.open(img_file)
+    os.remove(img_file)
+    new_file_name = os.path.splitext(img_file)[0]+'.png'
+    img.save(new_file_name, 'png')
+    return new_file_name
 
 
 def get_files_names_in_folder(some_folder):
