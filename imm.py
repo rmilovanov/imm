@@ -50,6 +50,22 @@ def is_valid_png(some_file):
     return result
 
 
+def make_white_bg_transparent(img_file):
+    img = Image.open('img.png')
+    os.remove(img_file)
+    img = img.convert("RGBA")
+    datas = img.getdata()
+
+    newData = []
+    for item in datas:
+    if item[0] == 255 and item[1] == 255 and item[2] == 255:
+        newData.append((255, 255, 255, 0))
+    else:
+        newData.append(item)
+
+    img.putdata(newData)
+    img.save(img_file, "PNG")
+
 def convert_image_file_to_jpg(img_file):
     """
     Creates JPEG file from any image file
