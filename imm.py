@@ -1,3 +1,7 @@
+#
+#  Updated:  03-Aug-2017
+#
+
 from PIL import Image
 import os
 import imghdr
@@ -58,13 +62,15 @@ def make_white_bg_transparent(img_file):
 
     newData = []
     for item in datas:
-        if item[0] == 255 and item[1] == 255 and item[2] == 255:
+        if item[0] > 253 and item[1] > 253 and item[2] > 253:
             newData.append((255, 255, 255, 0))
         else:
             newData.append(item)
 
     img.putdata(newData)
-    img.save(img_file, "PNG")
+    new_file_name = os.path.splitext(img_file)[0]+'.png'
+    img.save(new_file_name, "PNG")
+    return new_file_name
 
 def convert_image_file_to_jpg(img_file):
     """
@@ -177,21 +183,26 @@ def monochrome_copy(original_image_file, folder_to_store):
     img.save(new_img_name, 'jpeg')
     return new_img_name
 
-def resize_file(original_image_file, output_image_file, maxw, maxh):
-    im = Image.open(original_image_file)
 
+def resize_file(original_image_file, output_image_file, maxw, maxh):
+    """
+    Creates resized image file from given one
+    original_image_file : String
+        The name of source file
+    output_image_file : String
+        The name of file to save the result
+    maxw :
+        Max allowed width
+    maxw :
+        Max allowed height
+    """
+    im = Image.open(original_image_file)
     width, height = im.size
     ratio = min(float(maxw) / int(width), float(maxh) / int(height))
-    size = int(width * ratio), int(height * ratio)
-
-    basewidth = maxw
-    wpercent = (basewidth/float(im.size[0]))
-    hsize = int((float(im.size[1])*float(wpercent)))
-    im = im.resize((basewidth,hsize), Image.ANTIALIAS)
-    #print size
-    #im.resize(size, Image.ANTIALIAS)
+    im = im.resize((int(width*ratio),int(height*ratio)), Image.ANTIALIAS)
     im.save(output_image_file, "JPEG")
     return output_image_file
+
 
 def put_into_rect(original_image_file, output_image_file, rw, rh):
     im = Image.open(original_image_file)
@@ -205,35 +216,3 @@ def put_into_rect(original_image_file, output_image_file, rw, rh):
     resim.paste(im, offset)
     resim.save(output_image_file, "JPEG")
     return output_image_file
-
-
-
-#print is_valid_png('toyota.png')
-#convert_image_file_to_jpg('toyota.png')
-#print is_valid_jpg('toyota.jpg')
-
-#png_files = get_valid_pngs('img_dev')
-
-#for png_file in png_files:
-    #print png_file
-
-#test_folder = 'img_dev'
-#cats = sort_images(test_folder)
-#for category in cats:
-#    for t_file in cats[category]:
-#        print category + " : " + t_file
-
-#img1 = Image.open("1.jpg").transpose(Image.FLIP_LEFT_RIGHT)
-#img1.save("1_left_right.jpg")
-#img2 = Image.open("1.jpg").transpose(Image.FLIP_TOP_BOTTOM)
-#img2.save("1_up_down.jpg")
-#img3 = Image.open("1.jpg").transpose(Image.BILINEAR)
-#img3.save("1_bil.jpg")
-#img4 = Image.open("1.jpg")
-#image_file = img4.convert('1') # convert image to black and white
-#mage_file.save('1_monochrome.png')
-
-#img5 = Image.open('1.jpg').convert('LA')
-#img5.save('1_grayscale.png')
-#img6 = Image.open('1_grayscale.png').convert('RGB')
-#img6.save('1_grayscale.jpg','jpeg')
