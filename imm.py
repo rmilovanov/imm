@@ -1,12 +1,11 @@
 #
-#  Updated:  03-Aug-2017
+#  Updated:  22-Aug-2018
 #
 
 from PIL import Image
 import os
 import imghdr
 from os import listdir
-from os import isdir
 from os.path import isfile, join
 import ntpath
 
@@ -99,7 +98,7 @@ def get_files_names_in_folder(some_folder):
 
 
 def get_subfolders(some_folder):
-    return [f for f in listdir(some_folder) if isdir(join(some_folder, f))]
+    return [f for f in listdir(some_folder) if os.isdir(join(some_folder, f))]
 
 
 def get_files_in_folder(some_folder):
