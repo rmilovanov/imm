@@ -5,14 +5,9 @@
 from PIL import Image
 import os
 import imghdr
-import os
-import json
-from subprocess import call
-import shlex
 from os import listdir
+from os import isdir
 from os.path import isfile, join
-import shutil
-import re
 import ntpath
 
 
@@ -71,6 +66,7 @@ def make_white_bg_transparent(img_file):
     new_file_name = os.path.splitext(img_file)[0]+'.png'
     img.save(new_file_name, "PNG")
     return new_file_name
+
 
 def convert_image_file_to_jpg(img_file):
     """
@@ -147,8 +143,11 @@ def get_file_name_from_path(some_path):
 def rotated_copy(original_image_file, folder_to_store, rotation_angle):
     img_pre = Image.open(original_image_file)
     img = img_pre.rotate(rotation_angle, expand=True)
-    original_name_ext_cut = os.path.splitext(get_file_name_from_path(original_image_file))[0]
-    new_img_name = folder_to_store + "/" + original_name_ext_cut + "_" + str(rotation_angle) + ".jpg"
+    original_name_ext_cut = os.path.splitext(get_file_name_from_path(
+        original_image_file))[0]
+    new_img_name = folder_to_store + \
+        "/" + original_name_ext_cut + \
+        "_" + str(rotation_angle) + ".jpg"
     img.save(new_img_name)
     return new_img_name
 
@@ -156,30 +155,38 @@ def rotated_copy(original_image_file, folder_to_store, rotation_angle):
 def rotated_copies(original_image_file, folder_to_store, rotation_angles):
     result = []
     for some_angle in rotation_angles:
-        result.append(rotated_copy(original_image_file, folder_to_store, some_angle))
+        result.append(
+                rotated_copy(
+                        original_image_file, folder_to_store, some_angle))
     return result
 
 
 def mirror_top_bottom_copy(original_image_file, folder_to_store):
     img = Image.open(original_image_file).transpose(Image.FLIP_TOP_BOTTOM)
-    original_name_ext_cut = os.path.splitext(get_file_name_from_path(original_image_file))[0]
-    new_img_name = folder_to_store + "/" + original_name_ext_cut + "_ft" + ".jpg"
+    original_name_ext_cut = os.path.splitext(
+            get_file_name_from_path(original_image_file))[0]
+    new_img_name = folder_to_store + "/" + \
+        original_name_ext_cut + "_ft" + ".jpg"
     img.save(new_img_name)
     return new_img_name
 
 
 def grayscale_copy(original_image_file, folder_to_store):
     img = Image.open(original_image_file).convert('LA').convert('RGB')
-    original_name_ext_cut = os.path.splitext(get_file_name_from_path(original_image_file))[0]
-    new_img_name = folder_to_store + "/" + original_name_ext_cut + "_gs" + ".jpg"
+    original_name_ext_cut = os.path.splitext(
+            get_file_name_from_path(original_image_file))[0]
+    new_img_name = folder_to_store + "/" + original_name_ext_cut + \
+        "_gs" + ".jpg"
     img.save(new_img_name, 'jpeg')
     return new_img_name
 
 
 def monochrome_copy(original_image_file, folder_to_store):
     img = Image.open(original_image_file).convert('1').convert('RGB')
-    original_name_ext_cut = os.path.splitext(get_file_name_from_path(original_image_file))[0]
-    new_img_name = folder_to_store + "/" + original_name_ext_cut + "_mc" + ".jpg"
+    original_name_ext_cut = os.path.splitext(
+            get_file_name_from_path(original_image_file))[0]
+    new_img_name = folder_to_store + "/" + original_name_ext_cut + \
+        "_mc" + ".jpg"
     img.save(new_img_name, 'jpeg')
     return new_img_name
 
@@ -199,7 +206,7 @@ def resize_file(original_image_file, output_image_file, maxw, maxh):
     im = Image.open(original_image_file)
     width, height = im.size
     ratio = min(float(maxw) / int(width), float(maxh) / int(height))
-    im = im.resize((int(width*ratio),int(height*ratio)), Image.ANTIALIAS)
+    im = im.resize((int(width*ratio), int(height*ratio)), Image.ANTIALIAS)
     im.save(output_image_file, "JPEG")
     return output_image_file
 
@@ -208,7 +215,7 @@ def put_into_rect(original_image_file, output_image_file, rw, rh):
     im = Image.open(original_image_file)
     width, height = im.size
     ratio = min(float(rw) / int(width), float(rh) / int(height))
-    im = im.resize((int(width*ratio),int(height*ratio)), Image.ANTIALIAS)
+    im = im.resize((int(width*ratio), int(height*ratio)), Image.ANTIALIAS)
 
     resim = Image.new('RGB', (rw, rh), (255, 255, 255))
     width, height = im.size
