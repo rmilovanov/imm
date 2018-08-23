@@ -49,7 +49,7 @@ class TestLib(unittest.TestCase):
         boxy = 600
         box_width = 620
         box_height = 620
-        cut = imm.cut_area_around(
+        imm.cut_area_around(
             test_image, boxx, boxy, box_width, box_height, output_file)
         res_w, res_h = imm.get_dimensions(output_file)
         self.assertEqual(res_w, 590)

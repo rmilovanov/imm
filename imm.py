@@ -239,7 +239,6 @@ def cut_area_around(original_image_file, x, y, w, h, output_file=False):
     mode_type = "PNG" if is_png(original_image_file) else "JPEG"
     if output_file:
         save_image(croped, output_file, mode_type)
-        print "Image saved"
     return croped
 
 

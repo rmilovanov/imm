@@ -1,5 +1,6 @@
 import imm
 
+
 images = imm.get_files_in_folder('images/input')
 
 for image_file in images:
