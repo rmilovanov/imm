@@ -8,6 +8,7 @@ import imghdr
 from os import listdir
 from os.path import isfile, join
 import ntpath
+import errno
 
 
 def is_jpg(some_file):
@@ -224,9 +225,22 @@ def put_into_rect(original_image_file, output_image_file, rw, rh):
     return output_image_file
 
 
-def cut_area(original_image_file, output_image_file, mw, mh):
+def cut_area_around(original_image_file, x, y, w, h, output_file=False):
+    """
+    Razor area around the dot (x, y)
+    """
     im = Image.open(original_image_file)
     width, height = im.size
+    left = max(int(round(x-(w/2))), 0)
+    box_width = min(w, width-left)
+    top = max(int(round(y-(h/2))), 0)
+    box_height = min(h, height-top)
+    croped = im.crop((left, top, box_width+left, box_height+top))
+    mode_type = "PNG" if is_png(original_image_file) else "JPEG"
+    if output_file:
+        save_image(croped, output_file, mode_type)
+        print "Image saved"
+    return croped
 
 
 def get_dimensions(image_file):
@@ -237,3 +251,17 @@ def get_dimensions(image_file):
     """
     im = Image.open(image_file)
     return im.size
+
+
+def save_image(image_object, file_path, mode_type="JPEG"):
+    """
+    Saves image object to the file.
+    In will create the directory if one does not exist.
+    """
+    if not os.path.exists(os.path.dirname(file_path)):
+        try:
+            os.makedirs(os.path.dirname(file_path))
+        except OSError as exc:  # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
+    image_object.save(file_path, mode_type)
