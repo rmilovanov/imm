@@ -222,3 +222,18 @@ def put_into_rect(original_image_file, output_image_file, rw, rh):
     resim.paste(im, offset)
     resim.save(output_image_file, "JPEG")
     return output_image_file
+
+
+def cut_area(original_image_file, output_image_file, mw, mh):
+    im = Image.open(original_image_file)
+    width, height = im.size
+
+
+def get_dimensions(image_file):
+    """
+    Return image dimensions tuple
+    Usage example:
+    width, height = imm.get_dimensions(image_file)
+    """
+    im = Image.open(image_file)
+    return im.size
