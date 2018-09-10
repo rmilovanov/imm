@@ -237,18 +237,24 @@ def cut_area_around(original_image_file, x, y, w, h, output_file=False):
     box_height = min(h, height-top)
     croped = im.crop((left, top, box_width+left, box_height+top))
     mode_type = "PNG" if is_png(original_image_file) else "JPEG"
-    if output_file:
+    dw, dh = get_dimensions(croped)
+    result = croped if dw*dh > 0 else False
+    if output_file and result:
         save_image(croped, output_file, mode_type)
-    return croped
+    return result
 
 
-def get_dimensions(image_file):
+def get_dimensions(image):
     """
     Return image dimensions tuple
     Usage example:
     width, height = imm.get_dimensions(image_file)
+    or
+    width, height = imm.get_dimensions(image_object)
     """
-    im = Image.open(image_file)
+    im = image
+    if isinstance(image, basestring):
+        im = Image.open(image)
     return im.size
 
 
@@ -264,3 +270,41 @@ def save_image(image_object, file_path, mode_type="JPEG"):
             if exc.errno != errno.EEXIST:
                 raise
     image_object.save(file_path, mode_type)
+
+
+def cut_tending_area(original_image_file, x, y, w, h, output_file=False):
+    """
+    Cuts rectangle area around the dot (x, y). If area boundaries are out of
+    image dimenssions then area center will be moved on order to put the area
+    into image.
+    original_image_file : String
+        The name of source file
+    output_file : String [optional]
+        The name of file to save the result
+        It is False by default, you may leave it empty if you don't need to
+        save file.
+    w :
+        Rectangle area width
+    h :
+        Rectangle area height
+    """
+    im = Image.open(original_image_file)
+    width, height = im.size
+    result = False
+    if w <= width and h <= height:
+        if x < w/2:
+            x = int(round(w/2))
+        if x + w/2 > width:
+            x = int(width - round(w/2))
+        if y < h/2:
+            y = int(round(h/2))
+        if y + h/2 > height:
+            y = int(round(height - h/2))
+        box_x = int(round(x-w/2))
+        box_y = int(round(y-h/2))
+        croped = im.crop((box_x, box_y, box_x+w, box_y+h))
+        mode_type = "PNG" if is_png(original_image_file) else "JPEG"
+        if output_file:
+            save_image(croped, output_file, mode_type)
+        result = croped
+    return result

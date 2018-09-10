@@ -44,7 +44,6 @@ class TestLib(unittest.TestCase):
     def test_cut_area_around(self):
         test_image = 'images/input/longboard.png'
         output_file = 'images/test/longboard.jpg'
-        print imm.get_dimensions(test_image)
         boxx = 1000
         boxy = 600
         box_width = 620
@@ -54,6 +53,49 @@ class TestLib(unittest.TestCase):
         res_w, res_h = imm.get_dimensions(output_file)
         self.assertEqual(res_w, 590)
         self.assertEqual(res_h, 430)
+        os.remove(output_file)
+
+    def test_cut_area_around2(self):
+        test_image = 'images/input/tesla.jpg'
+        output_file = 'images/test/tesla.jpg'
+        boxx = 130
+        boxy = 640
+        box_width = 300
+        box_height = 220
+        cta = imm.cut_area_around(
+            test_image, boxx, boxy, box_width, box_height, output_file)
+        self.assertEqual(cta, False)
+        if cta:
+            os.remove(output_file)
+
+    def test_cut_tending_area(self):
+        test_image = 'images/input/tesla.jpg'
+        output_file = 'images/test/tesla.jpg'
+        boxx = 130
+        boxy = 640
+        box_width = 300
+        box_height = 220
+        cta = imm.cut_tending_area(
+            test_image, boxx, boxy, box_width, box_height, output_file)
+        res_w, res_h = imm.get_dimensions(output_file)
+        cta.show()
+        self.assertEqual(res_w, 300)
+        self.assertEqual(res_h, 220)
+        os.remove(output_file)
+
+    def test_cut_tending_area2(self):
+        test_image = 'images/input/sunrise.jpg'
+        output_file = 'images/test/sunrise.jpg'
+        boxx = 1850
+        boxy = 150
+        box_width = 300
+        box_height = 450
+        cta = imm.cut_tending_area(
+            test_image, boxx, boxy, box_width, box_height, output_file)
+        res_w, res_h = imm.get_dimensions(output_file)
+        cta.show()
+        self.assertEqual(res_w, 300)
+        self.assertEqual(res_h, 450)
         os.remove(output_file)
 
 
